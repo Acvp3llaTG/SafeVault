@@ -1,0 +1,42 @@
+@page "/add"
+@using SafeVault.Models
+@inject SafeVault.Data.SafeVaultDbContext DbContext
+
+<EditForm Model="@data" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="data.Username" />
+        <ValidationMessage For="@(() => data.Username)" />
+    </div>
+    <div>
+        <label>Password:</label>
+        <InputText @bind-Value="data.Password" type="password" />
+        <ValidationMessage For="@(() => data.Password)" />
+    </div>
+    <button type="submit">Add</button>
+</EditForm>
+
+@if (message != null)
+{
+    <p style="color: green">@message</p>
+}
+
+@code {
+    private SensitiveData data = new SensitiveData();
+    private string message;
+
+    private async Task HandleValidSubmit()
+    {
+        // Extra layer: sanitize input if needed (e.g., strip HTML)
+        data.Username = System.Net.WebUtility.HtmlEncode(data.Username);
+        data.Password = System.Net.WebUtility.HtmlEncode(data.Password);
+
+        DbContext.SensitiveDatas.Add(data); // EF Core param query
+        await DbContext.SaveChangesAsync();
+        message = "Data added securely!";
+        data = new SensitiveData();
+    }
+}

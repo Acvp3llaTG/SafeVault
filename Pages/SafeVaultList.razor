@@ -1,0 +1,38 @@
+@page "/list"
+@using SafeVault.Models
+@inject SafeVault.Data.SafeVaultDbContext DbContext
+
+<h3>Stored Data</h3>
+@if (datas == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in datas)
+            {
+                <tr>
+                    <td>@item.Username</td>
+                    <td>@item.Password</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<SensitiveData> datas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        datas = await DbContext.SensitiveDatas.ToListAsync();
+    }
+}

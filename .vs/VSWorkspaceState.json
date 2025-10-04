@@ -1,10 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Data",
     "\\Models",
     "\\Pages",
+    "\\Services",
     "\\Tests"
   ],
-  "SelectedNode": "\\Pages\\SaveVaultAdd.razor",
+  "SelectedNode": "\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

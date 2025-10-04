@@ -1,0 +1,41 @@
+@page "/login"
+@using SafeVault.Services
+@inject AuthService AuthService
+@inject CustomAuthStateProvider AuthProvider
+@inject NavigationManager Nav
+
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText @bind-Value="loginModel.Username" placeholder="Username" />
+    <InputText @bind-Value="loginModel.Password" type="password" placeholder="Password" />
+    <button type="submit">Login</button>
+</EditForm>
+@if (!string.IsNullOrEmpty(message))
+{
+    <div style="color:red">@message</div>
+}
+@code {
+    private LoginModel loginModel = new();
+    private string message;
+
+    public class LoginModel
+    {
+        [Required] public string Username { get; set; }
+        [Required] public string Password { get; set; }
+    }
+
+    private async Task HandleLogin()
+    {
+        var user = await AuthService.Authenticate(loginModel.Username, loginModel.Password);
+        if (user != null)
+        {
+            AuthProvider.MarkUserAuthenticated(user.Username, user.Role);
+            Nav.NavigateTo("/");
+        }
+        else
+        {
+            message = "Invalid credentials.";
+        }
+    }
+}

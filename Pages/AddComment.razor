@@ -1,0 +1,26 @@
+@page "/add-comment"
+@inject UserService UserService
+
+<EditForm Model="comment" OnValidSubmit="OnSubmit">
+    <InputText @bind-Value="comment.Text" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+<p>Preview:</p>
+<p>@_sanitizedPreview</p>
+
+@code {
+    private Comment comment = new();
+    private string _sanitizedPreview;
+
+    private void OnSubmit()
+    {
+        // Sanitize before displaying
+        _sanitizedPreview = System.Net.WebUtility.HtmlEncode(comment.Text);
+    }
+
+    public class Comment
+    {
+        public string Text { get; set; }
+    }
+}
